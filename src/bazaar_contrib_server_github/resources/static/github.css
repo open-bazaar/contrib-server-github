@@ -1,0 +1,26 @@
+/* The GitHub login's settings, folded open under its row in the login methods part. */
+
+body { background: transparent; }
+[x-cloak] { display: none !important; }
+.github { display: grid; gap: 18px; padding: 18px; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fields > * { min-width: 0; }
+.fields .wide { grid-column: 1 / -1; }
+.req { color: var(--crimson); margin-left: 3px; }
+input.input { width: 100%; font: inherit; }
+.input > input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; outline: none; }
+.input:has(> input:focus-visible) { border-color: var(--saffron); box-shadow: 0 0 0 4px var(--saffron-soft); }
+/* the callback: its beginning shows, a long end gives way */
+.input.ro { background: var(--surface-2); }
+.input.ro > input { text-overflow: ellipsis; }
+.copy, .eye { flex: none; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+.eye span { display: flex; }
+.eye svg { width: 16px; height: 16px; }
+footer { display: flex; align-items: center; gap: 12px; }
+footer .btn { margin-left: auto; }
+.outcome { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12.5px; }
+.outcome .i svg { width: 14px; height: 14px; }
+.outcome.done { color: var(--jade); }
+.outcome.wrong { color: var(--crimson); }
+
+:root[data-layout="narrow"] .fields { grid-template-columns: 1fr; }
