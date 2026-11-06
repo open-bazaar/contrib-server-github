@@ -1,0 +1,61 @@
+{% extends "server/base.html" %}
+{% import "server/icons.html" as icons %}
+{# folded open under the GitHub row of the login methods part #}
+{% block top %}{% endblock %}
+{% block title %}{{ t.text("github.name") }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ asset('github.css') }}">{% endblock %}
+{% block body %}
+{# once saved, the part around it is drawn again to show GitHub set up #}
+<form class="github" method="post" action="/ui/github/"{% if saved %} x-data x-init="window.parent !== window && window.parent.location.reload()"{% endif %}>
+  <div class="fields">
+    <div class="field">
+      <label for="client_id">Client ID<span class="req">*</span></label>
+      <input class="input mono" id="client_id" name="client_id" value="{{ configured.client_id if configured else '' }}" placeholder="{{ t.text('github.client_id.hint') }}" autocomplete="off" spellcheck="false" required>
+    </div>
+    {# what is typed may be shown; the secret saved before never comes back to the page #}
+    <div class="field" x-data="{ shown: false }">
+      <label for="client_secret">Client Secret<span class="req">*</span></label>
+      <span class="input">
+        <input class="mono" id="client_secret" name="client_secret" type="password" :type="shown ? 'text' : 'password'" placeholder="{{ t.text('github.client_secret.kept' if configured else 'github.client_secret.hint') }}" autocomplete="new-password" spellcheck="false"{% if not configured %} required{% endif %}>
+        <button class="suffix eye" type="button" @click="shown = !shown" :aria-pressed="shown" aria-label="{{ t.text('github.client_secret.show') }}">
+          <span x-show="!shown">{% include "github/icons/eye.svg" %}</span><span x-show="shown" x-cloak>{% include "github/icons/eye-off.svg" %}</span>
+        </button>
+      </span>
+    </div>
+    <div class="field">
+      <label for="default_role">{{ t.text("github.role") }}</label>
+      <span class="input select">
+        <select id="default_role" name="default_role">
+          <option value="">{{ t.text("github.role.global", {"role": default.name}) if default else t.text("github.role.none") }}</option>
+          {% for role in roles %}<option value="{{ role.id }}"{% if configured and configured.default_role_id == role.id %} selected{% endif %}>{{ role.name }}</option>{% endfor %}
+        </select>
+        {{ icons.icon("chevron-down") }}
+      </span>
+    </div>
+    <div class="field">
+      <label for="session_minutes">{{ t.text("github.minutes") }}</label>
+      <span class="input">
+        <input id="session_minutes" name="session_minutes" type="number" min="1" inputmode="numeric" value="{{ configured.session_minutes or '' if configured else '' }}" placeholder="{{ t.text('github.minutes.same', {'minutes': minutes}) }}">
+        <span class="suffix">{{ t.text("github.minutes.unit") }}</span>
+      </span>
+    </div>
+    {# where GitHub sends the browser back: under the address this page is seen at, not the one the server hears #}
+    <div class="field wide" x-data="{ copied: false }">
+      <label for="redirect_uri">{{ t.text("github.callback") }}</label>
+      <span class="input ro">
+        <input class="mono" id="redirect_uri" name="redirect_uri" x-ref="callback" readonly x-init="$el.value = location.origin + '{{ callback }}'">
+        <button class="suffix copy" type="button" @click="$refs.callback.select(); navigator.clipboard?.writeText($refs.callback.value); copied = true">
+          <span x-show="!copied">{{ t.text("github.copy") }}</span><span x-show="copied" x-cloak>{{ t.text("github.copied") }}</span>
+        </button>
+      </span>
+      <span class="hint">{{ t.text("github.callback.hint") }}</span>
+    </div>
+  </div>
+  <footer>
+    {% if error %}<span class="outcome wrong" role="alert">{{ t.text("github.invalid") }}</span>
+    {% elif configured %}<span class="outcome done">{{ icons.icon("check") }}{{ t.text("github.offered") }}</span>
+    {% else %}<span class="outcome">{{ t.text("github.offer") }}</span>{% endif %}
+    <button class="btn sm primary" type="submit">{{ t.text("github.save") }}</button>
+  </footer>
+</form>
+{% endblock %}
