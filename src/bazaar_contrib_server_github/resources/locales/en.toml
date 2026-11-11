@@ -14,6 +14,7 @@
 "github.callback.hint" = "On GitHub, create an app under Settings › Developer settings › OAuth Apps with the address above as its Authorization callback URL, then fill in its Client ID and a Client Secret generated there."
 "github.copy" = "Copy"
 "github.copied" = "Copied"
+"github.copy.failed" = "Not copied, copy it by hand"
 "github.offer" = "Once saved, the login page offers logging in with GitHub."
 "github.offered" = "Offered on the login page"
 "github.invalid" = "Not saved: check the required fields and the callback URL."

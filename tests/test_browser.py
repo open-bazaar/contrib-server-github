@@ -16,6 +16,7 @@ async def test_set_up_on_the_settings_page_and_used_from_the_login_page():
         try:
             # it trusts the GitHub on this machine as the server does
             context = await browser.new_context(ignore_https_errors=True)
+            await context.grant_permissions(["clipboard-read"], origin=served.url)
             page = await context.new_page()
             await page.goto(f"{served.url}/login/")
             await page.fill("#name", "admin")
@@ -36,6 +37,17 @@ async def test_set_up_on_the_settings_page_and_used_from_the_login_page():
             github = methods.frame_locator("details.method iframe.settings-of")
             # the callback is made from the address the page is open at
             await expect(github.locator("#redirect_uri")).to_have_value(served.callback)
+            # and is copied, the page served over plain http to an address on
+            # the network too, where the clipboard interface is not given
+            settings = page.frame(url=re.compile(r"/ui/github/"))
+            assert settings
+            await settings.evaluate(
+                "Object.defineProperty(navigator, 'clipboard', {value: undefined})"
+            )
+            await github.locator(".copy").click()
+            assert (
+                await page.evaluate("navigator.clipboard.readText()") == served.callback
+            )
             await github.locator("#client_id").fill(served.github.client_id)
             secret = github.locator("#client_secret")
             await secret.fill(served.github.client_secret)

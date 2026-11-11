@@ -40,12 +40,12 @@
       </span>
     </div>
     {# where GitHub sends the browser back: under the address this page is seen at, not the one the server hears #}
-    <div class="field wide" x-data="{ copied: false }">
+    <div class="field wide" x-data="{ copied: null }">
       <label for="redirect_uri">{{ t.text("github.callback") }}</label>
       <span class="input ro">
         <input class="mono" id="redirect_uri" name="redirect_uri" x-ref="callback" readonly x-init="$el.value = location.origin + '{{ callback }}'">
-        <button class="suffix copy" type="button" @click="$refs.callback.select(); navigator.clipboard?.writeText($refs.callback.value); copied = true">
-          <span x-show="!copied">{{ t.text("github.copy") }}</span><span x-show="copied" x-cloak>{{ t.text("github.copied") }}</span>
+        <button class="suffix copy" type="button" @click="$refs.callback.select(); copied = await bazaarCopy($refs.callback.value)">
+          <span x-show="copied === null">{{ t.text("github.copy") }}</span><span x-show="copied === true" x-cloak>{{ t.text("github.copied") }}</span><span x-show="copied === false" x-cloak>{{ t.text("github.copy.failed") }}</span>
         </button>
       </span>
       <span class="hint">{{ t.text("github.callback.hint") }}</span>

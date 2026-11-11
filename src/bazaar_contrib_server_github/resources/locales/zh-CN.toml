@@ -14,6 +14,7 @@
 "github.callback.hint" = "在 GitHub 的 Settings › Developer settings › OAuth Apps 里新建应用，Authorization callback URL 填上面的回调地址；创建后把 Client ID 和生成的 Client Secret 填到这里。"
 "github.copy" = "复制"
 "github.copied" = "已复制"
+"github.copy.failed" = "没复制上，请手动复制"
 "github.offer" = "保存后，登录页出现「用 GitHub 账号登录」。"
 "github.offered" = "已出现在登录页"
 "github.invalid" = "没有保存：请检查必填项和回调地址。"
